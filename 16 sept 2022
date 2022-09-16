@@ -1,0 +1,44 @@
+sweetalert2 external library 
+https://cdn.jsdelivr.net/npm/sweetalert2@11.4.33/dist/sweetalert2.all.min.js
+
+html button to show alert msg 
+<button type="button" id="add-item-category" title="Add Category" aria-label="Add Category" class="t-Button t-Button--icon t-Button--hot t-Button--warning t-Button--simple " 
+<span aria-hidden= "true" class="t-Icon fa fa-plus-circle-o"> </span>
+</button>
+
+A modal with a title, an error icon, a text, and a footer
+
+Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Something went wrong!',
+  footer: '<a href="">Why do I have this issue?</a>'
+}) 
+
+
+Ajax Call Back Process 
+
+begin 
+if length(:P3_ITEM_ID) > 3 then
+htp.p('item id must be greater than 3 digits');
+else
+htp.p('SUCCESS');
+END IF;
+end;
+
+
+Dynamic Action 
+
+apex.server.process('ajax_validation',
+{
+    pageItems: '#P3_ITEM_ID'
+}
+,
+{
+    dataType: 'text' , success: function (data) 
+}
+{
+    if (data != 'SUCCESS') showError(data);
+}
+}   
+)
