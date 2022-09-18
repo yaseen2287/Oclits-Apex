@@ -42,3 +42,28 @@ apex.server.process('ajax_validation',
 }
 }   
 )
+
+function and global variables (main page)
+
+function showError(pdata){
+    apex.item('P3_ITEM_ID').setFocus();
+
+    apex.message.clearErrors();
+
+    apex.message.showErrors({
+
+    {
+        type: "error",
+        location: ["page", "inline"],
+        pageItem: "P3_ITEM_ID",
+        message: pdata,
+        unsafe: false
+    },
+        {
+        type: "error",
+        location: "page",
+        pageItem: "An error has occured,",
+        unsafe: false 
+        }
+    });
+}
