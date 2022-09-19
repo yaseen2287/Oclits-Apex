@@ -1,0 +1,59 @@
+Created hierarical Dynamic NAvigation Menu
+
+select level, 
+       EMPNO|| '=' || ENAME label, 
+       'f?p=&APP_ID.:1:'||:APP_SESSION||':::::' target,
+       'NO' is_current,
+       '#APP_IMAGES#del.gif' image
+from EMP
+start with MGR is null
+connect by prior EMPNO = MGR
+order siblings by ENAME
+
+
+Created RESTFUL API
+http://localhost:8080/ords/trainingwp/group/data
+
+
+Created Process to call API
+
+begin 
+
+APEX_COLLECTION.DELETE_COLLECTION('APIDATA');
+exception when others then
+null;
+end;
+
+begin 
+APEX_COLLECTION.CREATE_COLLECTION('APIDATA');
+APEX_COLLECTION.ADD_MEMBER(
+P_COLLECTION_NAME => 'APIDATA',
+P_CLOB001 => apex_web_service.make_rest_request(
+P_URL => 'http://localhost:8080/ords/trainingwp/group/data',
+P_HTTP_METHOD => 'GET' ));
+end;
+
+
+ to Fetch API Data
+
+with eqdata as(
+
+	select e.id, e.name
+
+	from APEX_COLLECTIONS  j, json_table(
+	CLOB001,
+	'$.items[*]'
+	columns(
+		id  varchar2(20) path '$.item_id',
+		name  varchar2(20) path '$.item_name')) e
+	where upper(J.COLLECTION_NAME) =  'APIDATA'
+),
+minmax as(
+
+	select min(e.id) id,max(e.name) name
+	    from eqdata e
+)
+select e.id, e.name
+from eqdata e, minmax m
+
+ 
