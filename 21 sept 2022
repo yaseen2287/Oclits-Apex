@@ -1,0 +1,25 @@
+
+-- Process to insert data into activities_log table 
+
+
+BEGIN
+insert into activities_log (
+    activity_datetime,
+    activity_type,
+    username,
+    app_no,
+    page_no
+)
+values (
+    Systimestamp,
+    'PAGE_REQ',
+    :P9999_USERNAME,
+    :APP_ID,
+    :APP_PAGE_ID
+);
+
+Exception
+  When Others Then
+  Null;
+End;
+
