@@ -1,0 +1,36 @@
+
+-- trigger for activities log 
+
+create or replace TRIGGER trg_activities_log 
+AFTER INSERT OR UPDATE OR DELETE  
+ON DEPT 
+ 
+FOR EACH ROW  
+ 
+BEGIN  
+IF DELETING THEN  
+INSERT INTO ACTIVITIES_LOG ( activity_datetime, activity_type, username, app_no, page_no, TBL_NAME, ACTIONS) 
+VALUES ( Systimestamp,'PAGE_REQ', V('APP_USER_NAME') , V('APP_ID'), V('APP_PAGE_ID'), 'DEPT' , 'DELETE'); 
+END IF; 
+ 
+IF UPDATING THEN  
+INSERT INTO ACTIVITIES_LOG ( activity_datetime, activity_type, username, app_no, page_no,TBL_NAME, ACTIONS) 
+VALUES ( Systimestamp,'PAGE_REQ', V('APP_USER_NAME') , V('APP_ID'), V('APP_PAGE_ID'), 'DEPT' , 'UPDATE'); 
+END IF; 
+ 
+IF INSERTING THEN  
+INSERT INTO ACTIVITIES_LOG ( activity_datetime, activity_type, username, app_no, page_no, TBL_NAME, ACTIONS) 
+VALUES ( Systimestamp,'PAGE_REQ', V('APP_USER_NAME') , V('APP_ID'), V('APP_PAGE_ID'), 'DEPT' , 'INSERT'); 
+END IF; 
+ 
+END;
+
+
+
+-- authorization scheme 
+
+if :APP_USER_NAME = 'Ubaid' then
+return true;
+else
+return false;
+end if;
