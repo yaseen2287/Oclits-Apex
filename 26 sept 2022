@@ -1,0 +1,101 @@
+
+--trigger for fetching activities of login user 
+
+create or replace TRIGGER trg_activities_log 
+AFTER INSERT OR UPDATE OR DELETE  
+ON DEPT 
+ 
+FOR EACH ROW  
+
+DECLARE 
+   V_IP_ADDRESS VARCHAR2(30);
+    V_HOST VARCHAR2(30);
+    
+begin
+SELECT SYS_CONTEXT ('USERENV', 'IP_ADDRESS') INTO V_IP_ADDRESS FROM DUAL;
+SELECT SYS_CONTEXT ('USERENV', 'HOST') INTO V_HOST FROM DUAL;
+  
+IF DELETING THEN  
+INSERT INTO ACTIVITIES_LOG ( activity_datetime, activity_type, username, app_no, page_no, TBL_NAME, ACTIONS, ip_address, host_name) 
+VALUES ( Systimestamp,'PAGE_REQ', V('APP_USER_NAME') , V('APP_ID'), V('APP_PAGE_ID'), 'DEPT' , 'DELETE', V_IP_ADDRESS, V_HOST); 
+END IF; 
+ 
+IF UPDATING THEN  
+INSERT INTO ACTIVITIES_LOG ( activity_datetime, activity_type, username, app_no, page_no,TBL_NAME, ACTIONS,ip_address, host_name) 
+VALUES ( Systimestamp,'PAGE_REQ', V('APP_USER_NAME') , V('APP_ID'), V('APP_PAGE_ID'), 'DEPT' , 'UPDATE', V_IP_ADDRESS, V_HOST); 
+END IF; 
+ 
+IF INSERTING THEN  
+INSERT INTO ACTIVITIES_LOG ( activity_datetime, activity_type, username, app_no, page_no, TBL_NAME, ACTIONS, ip_address, host_name) 
+VALUES ( Systimestamp,'PAGE_REQ', V('APP_USER_NAME') , V('APP_ID'), V('APP_PAGE_ID'), 'DEPT' , 'INSERT', V_IP_ADDRESS, V_HOST); 
+END IF; 
+ 
+END;
+
+
+-- Create Report to Display Data 
+
+select to_char(ACTIVITY_DATETIME, 'yyyy-mm-dd') date_, to_char(ACTIVITY_DATETIME, 'hh24:mi:ss') time_,
+      ACTIVITY_TYPE,
+       USERNAME,
+       APP_NO,
+       PAGE_NO,
+       TBL_NAME,
+       ACTIONS,
+       IP_ADDRESS,
+        HOST_NAME
+       
+  from ACTIVITIES_LOG
+
+
+-- Created Bar Code Generator 
+
+https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js
+
+
+<canvas id="canvas"></canvas>
+
+-- Dynamic Action 
+
+v=apex.item( "P32_USER_INPUT" ).getValue();//pass your item name
+JsBarcode("#canvas", v,{
+  lineColor: " #000000",
+  width: 3,
+  height: 150,
+  displayValue: false
+}); 
+
+
+-- Created QR Code 
+
+#APP_FILES#qrcode.min.js
+
+var qrcode = new QRCode("qrcode");
+
+<div id="qrcode"></div>
+
+qrcode.clear(); // clear the code.
+qrcode.makeCode($v("P33_CODE"));
+
+
+select t.*, t.num|| t.name as qrcode 
+from 
+(
+    select level num, to_char(to_date(level, 'j'), 'jsp') name  
+    from dual 
+    connect by level <=100
+) t
+
+
+<div id="code-#NUM#"></div>
+<script type="text/javascript">
+var qrcode = new QRCode(document.getElementById("code-#NUM#"), {
+	text: "#QRCODE#",
+	width: 128,
+	height: 128,
+	colorDark : "#000000",
+	colorLight : "#ffffff",
+	correctLevel : QRCode.CorrectLevel.H
+});
+</script>
+
