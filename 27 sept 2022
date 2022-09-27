@@ -16,3 +16,31 @@ select "ITEM_ID","ITEM_NAME" card_title,"ITEM_CATEGORY","ITEM_TYPES","ITEM_DETAI
 from "ITEM"
 
 
+
+
+======================================================================================
+
+var gTimer;
+
+
+$("#P34_SEARCH").keypress(function(e){
+    return e.keyCode !==13;
+})
+
+-- Dynamic Action 
+this.browserEvent.keyCode!==13
+
+--  true action 
+var Itrg=$(this.affectedElements);
+clearTimeout(gTimer);
+gTimer=setTimeout(function(){
+    Itrg.trigger("apexrefresh");
+},900);
+
+
+
+select "ITEM_ID","ITEM_NAME","ITEM_CATEGORY","ITEM_TYPES","ITEM_DETAILS","UOM","UNIT_PRICE","IMAGE","MIN_STOCK","CREATED_BY","CREATED_TIME","UPDATED_BY","UPDATED_TIME","BAR_CODE"
+from "ITEM"
+Where
+  UPPER(BAR_CODE)
+  Like nvl('%'||UPPER(:P34_SEARCH)||'%',UPPER(BAR_CODE))
