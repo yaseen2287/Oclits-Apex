@@ -1,0 +1,18 @@
+#APP_FILES#JsBarcode.all.min.js
+
+
+JsBarcode(".barcode").init();
+
+
+select "ITEM_ID","ITEM_NAME" card_title,"ITEM_CATEGORY","ITEM_TYPES","ITEM_DETAILS","UOM","UNIT_PRICE",sys.dbms_lob.getlength("IMAGE")"IMAGE","MIN_STOCK","CREATED_BY","CREATED_TIME","UPDATED_BY","UPDATED_TIME", "BAR_CODE",
+
+'<svg class="barcode"
+  jsbarcode-format="code128"
+  jsbarcode-value='||BAR_CODE||'
+  jsbarcode-textmargin="0"
+  jsbarcode-fontoptions="bold">
+</svg>' as barcode
+
+from "ITEM"
+
+
