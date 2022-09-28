@@ -1,0 +1,58 @@
+-- javascript function to print barcodes
+
+function printdiv(barcode)
+{
+    var headstr = "<html><head><title></title></head><body>";
+    var footstr = "</body>";
+    var newstr = document.all.item(barcode).innerHTML;
+    var oldstr = document.body.innerHTML;
+    document.body.innerHTML = headstr+newstr+footstr;
+    window.print();
+    document.body.innerHTML = oldstr;
+    return false;       
+}
+
+
+-- for generating Bar Codes 
+
+declare
+begin
+Htp.p('<input type= "button1" class="button button1" class="t-Icon t-Icon--right fa fa-print" id="print" type="button" onclick="printdiv(''div_print1'');" value="PRINT"/><br/>
+        <div id="div_print1" style="margin-top:50px;">');
+
+htp.p('<img style= "height:100px;" src="https://barcode.tec-it.com/barcode.ashx?data='|| :P32_NAME ||'  '|| :P32_BARCODE ||'" alt="barcode"/>&nbsp;&nbsp;&nbsp;&nbsp;');
+
+
+htp.p('
+  
+<div>');
+
+htp.p('</div>');
+
+end ;
+
+
+
+
+-- for fetching record from items table 
+
+declare 
+
+v_item_id varchar2(100);
+v_item_name varchar2(100);
+
+Begin
+select  ITEM_ID, ITEM_NAME
+into v_item_id, v_item_name
+from ITEM
+Where UPPER(BAR_CODE)
+  Like nvl('%'||UPPER(:P34_SEARCHH)||'%',UPPER(BAR_CODE));
+
+  htp.p('item id is:'|| v_item_id || '<br>');
+  htp.p('item name is:' || v_item_name);
+
+exception 
+    when no_data_found then
+     v_item_id:='';
+     v_item_name:='';
+end;
