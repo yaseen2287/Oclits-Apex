@@ -1,0 +1,42 @@
+
+-- Process to Capture loggin user's Ip address and host_name
+Begin 
+insert into activity_log 
+(
+    activity_datetime,
+    activity_type,
+    username,
+    remarks,
+    ip_address,
+    host_name
+) values (
+    Systimestamp,
+    'LOGIN',
+    :P9999_USERNAME,
+    'Successful',
+    SYS_CONTEXT('USERENV', 'IP_ADDRESS', 15),
+    SYS_CONTEXT('USERENV', 'HOST', 15) 
+);
+
+Exception
+  When Others Then
+  Null;
+End;
+
+-- Generate Dynamic Report on the basis of Sql query 
+
+select "ITEM_ID","ITEM_NAME" ,"ITEM_CATEGORY","ITEM_TYPES","ITEM_DETAILS","UOM","UNIT_PRICE","MIN_STOCK", "BAR_CODE", (select SYS_CONTEXT('USERENV', 'IP_ADDRESS', 15) from dual) || (select apex_page.get_url from dual) as URL,
+
+'<svg class="barcode"
+  jsbarcode-format="code128"
+  jsbarcode-value='||BAR_CODE||'
+  jsbarcode-textmargin="0"
+  jsbarcode-fontoptions="bold">
+</svg>' as barcode
+
+
+from ITEM
+where ITEM_ID = :P37_ITEM_ID;
+
+
+
