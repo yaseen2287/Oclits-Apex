@@ -1,0 +1,20 @@
+
+-- to capture url of current page 
+
+BEGIN
+
+HTP.p ( OWA_UTIL.get_cgi_env ('REQUEST_PROTOCOL') || '://'
+|| OWA_UTIL.get_cgi_env ('HTTP_HOST') || ':'
+--|| OWA_UTIL.get_cgi_env ('SERVER_PORT') || '/'
+|| OWA_UTIL.get_cgi_env ('SCRIPT_NAME') 
+|| OWA_UTIL.get_cgi_env ('path_info') || '?'
+|| OWA_UTIL.get_cgi_env ('QUERY_STRING') 
+);
+END; 
+
+--------------------------------------------------
+
+(select SYS_CONTEXT('USERENV', 'IP_ADDRESS', 15) from dual) ||':8080'|| (SELECT APEX_PAGE.GET_URL from dual ) as URL 
+
+
+
