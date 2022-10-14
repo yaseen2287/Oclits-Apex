@@ -47,3 +47,36 @@ WHERE
     
     
     
+=============================================================================================
+
+DECLARE 
+
+I_id NUMBER;
+
+BEGIN
+
+I_id := APEX_MAIL.SEND(
+
+	p_to	=> :P40_FROM,
+	p_from	=> :P40_TO,
+	p_subj	=> :P40_SUB,
+	p_body	=> :P40_BODY
+    );
+
+    FOR c1 IN (SELECT filename, blob_content, mime_type
+
+	FROM APEX_APPLICATION_FILES 
+	Where flow_id IN (4500)) LOOP
+
+	APEX_MAIL.ADD_ATTACHMENT(
+
+	p_mail_id		=> I_id,
+	p_attachment	=> c1.blob_content,
+	p_filename	=> c1.filename,
+	p_mime_type	=> c1.mime_type);
+	
+END LOOP;
+
+COMMIT;
+END;
+
