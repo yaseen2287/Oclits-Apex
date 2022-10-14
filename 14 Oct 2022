@@ -1,0 +1,49 @@
+
+API for Notification
+
+SELECT /* sets the icon of the list item  (fa-exclamation-triangle) */
+    nvl(icon_img,'fa-exclamation-triangle') AS NOTE_ICON, 
+    /* sets the color of the list icon */
+    'rgb(192,0,15)' AS NOTE_ICON_COLOR, 
+    /* sets the title of the list item (html possible) */
+    xsubject AS NOTE_HEADER,
+    /* sets the text of the list item (html possible */
+    --'My first Notification ' AS NOTE_TEXT, 
+    XMSG AS NOTE_TEXT, 
+    /* set the link when click on list item */
+    'javascript:alert("Click on Notification Entry");void(0);' AS NOTE_LINK, 
+    /* sets the color of the left box shadow */
+    'rgb(192,0,15)' AS NOTE_COLOR,
+    /* Link or js that is executed when press accept link (if left or null not accept is shown */ 
+    'javascript:alert("Accepted");void(0);' AS NOTE_ACCEPT,
+    /* Link or js that is executed when press decline link (if left or null not decline is shown */ 
+    'javascript:alert("Declined");void(0);' AS NOTE_DECLINE,
+    /* When enable Browser Notifications in ConfigJSON then you can select which notifications should not be fire browser not. */
+    0 AS NO_BROWSER_NOTIFICATION
+FROM
+    MGMSG
+UNION ALL
+SELECT
+    'fa-wrench' AS NOTE_ICON,
+    '#3e6ebc' AS NOTE_ICON_COLOR,
+    'System maintenance' AS NOTE_HEADER,
+    'In the time between <b>08:30</b> and <b>11:00</b> a system maintenance takes place. The systems can only be used in read-only mode and are limited in use' AS NOTE_TEXT,
+    'https://apex.world' AS NOTE_LINK,
+    '#3e6ebc' AS NOTE_COLOR,
+    NULL AS NOTE_ACCEPT,
+    'javascript:alert("Declined");void(0);' AS NOTE_DECLINE,
+    /* When enable Browser Notifications in ConfigJSON then you can select which notifications should not be fire browser not. */
+    0 AS NO_BROWSER_NOTIFICATION
+FROM
+    DUAL
+WHERE
+    2 = ROUND(
+        DBMS_RANDOM.VALUE(
+            1,
+            2
+        )
+    )
+    
+    
+    
+    
